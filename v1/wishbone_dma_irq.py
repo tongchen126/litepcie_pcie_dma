@@ -186,7 +186,7 @@ class LiteWishbone2PCIeDMA(Module,AutoCSR):
         ]
         
 
-class LitePCIe2WishboneDMA(Module, AutoCSR):
+class LitePCIe2WishboneDMASingleWord(Module, AutoCSR):
     def __init__(self, endpoint, data_width=32, leds=None):
         port = endpoint.crossbar.get_master_port()
         self.host_addr = host_addr = CSRStorage(32, description="Host ADDR", reset=0)
@@ -249,6 +249,81 @@ class LitePCIe2WishboneDMA(Module, AutoCSR):
                NextValue(offset,offset+1),
                NextValue(self.test3.status, self.test3.status + 1),
                If(offset + 1 == (length.storage >> 2),NextState("IDLE"),self.irq.eq(~irq_disable.storage)).Else(NextState("ISSUE-READ"))
+            )
+        )
+
+class LitePCIe2WishboneDMA(Module, AutoCSR):
+    def __init__(self, endpoint, data_width=32, leds=None):
+        port = endpoint.crossbar.get_master_port()
+        self.host_addr = host_addr = CSRStorage(32, description="Host ADDR", reset=0)
+        self.length = length = CSRStorage(32, description="Length", reset=128)
+        self.bus_addr = bus_addr = CSRStorage(32, description="SoC Bus ADDR", reset=0x3000_0000)
+        self.rd_enable = rd_enable = CSRStorage(1, description="Read Enable", reset=0)
+        self.irq_disable = irq_disable = CSRStorage(1, description="Disable PCIe2Wishbone IRQ", reset=0)
+        self.bus_rd = bus_rd = wishbone.Interface()
+        self.irq = Signal(reset=0)
+        self.test1 = CSRStatus(32)
+        self.test2 = CSRStatus(32)
+        self.test3 = CSRStatus(32)
+
+        offset = Signal(32,reset=0)
+        data = Signal(endpoint.phy.data_width, reset=0)
+        counter = Signal(32,reset=0)
+        max_word = endpoint.phy.data_width//data_width
+        self.comb += [
+            port.source.channel.eq(port.channel),
+            port.source.first.eq(1),
+            port.source.last.eq(1),
+            port.source.adr.eq(host_addr.storage+(offset<<2)),
+            port.source.req_id.eq(endpoint.phy.id),
+            port.source.tag.eq(0),
+            port.source.len.eq(max_word),
+            port.source.dat.eq(0),
+        ]
+
+        self.submodules.fsm = fsm = FSM(reset_state="IDLE")
+        fsm.act("IDLE",
+            If(rd_enable.storage & rd_enable.re,
+                NextState("ISSUE-READ"),
+                NextValue(offset,0),
+               )
+        )
+        fsm.act("ISSUE-READ",
+            port.source.valid.eq(1),
+            port.source.we.eq(0),
+            If(port.source.ready,
+                NextState("MAPDATA"),
+               NextValue(self.test1.status,self.test1.status+1),
+            )
+        )
+        fsm.act("MAPDATA",
+            If(port.sink.valid,
+               port.sink.ready.eq(1),
+               NextValue(data, port.sink.dat),
+               NextValue(self.test2.status, self.test2.status + 1),
+               NextState("WB-WRITE"),
+               NextValue(counter, 0),
+            ),
+        )
+        cases = {}
+        for i in range(max_word):
+            n = i
+            cases[i] = bus_rd.dat_w.eq(data[n*data_width:(n+1)*data_width])
+        self.comb += Case(counter, cases)
+
+        fsm.act("WB-WRITE",
+            bus_rd.stb.eq(1),
+            bus_rd.we.eq(1),
+            bus_rd.cyc.eq(1),
+            bus_rd.sel.eq(0xf),
+            bus_rd.adr.eq(counter + offset + (bus_addr.storage >> 2)),
+            If(bus_rd.ack,
+               NextValue(counter,counter+1),
+               If(counter + 1 == max_word,
+                    NextValue(offset,offset+max_word),
+                    NextValue(self.test3.status, self.test3.status + 1),
+                    If(offset + max_word == (length.storage >> 2),NextState("IDLE"),self.irq.eq(~irq_disable.storage)).Else(NextState("ISSUE-READ"))
+                )
             )
         )
 

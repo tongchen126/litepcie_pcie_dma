@@ -210,6 +210,11 @@ static int litepcie_pci_probe(struct pci_dev *dev, const struct pci_device_id *i
 				512,
 				&litepcie_dev->dma_addr,
 				GFP_KERNEL);
+	memset(litepcie_dev->host_dma_addr,0x12345678,4);
+	memset(litepcie_dev->host_dma_addr+4,0xabcdffee,4);
+	memset(litepcie_dev->host_dma_addr+8,0x12345678,4);
+	memset(litepcie_dev->host_dma_addr+12,0xabcdef09,4);
+	memset(litepcie_dev->host_dma_addr+16,0xabcdff09,512-16);
 	pci_info(dev,"dma addr %x:%d, host dma addr %x:%d\n",litepcie_dev->dma_addr,litepcie_dev->dma_addr,litepcie_dev->host_dma_addr,litepcie_dev->host_dma_addr);
 
 
