@@ -207,7 +207,7 @@ static int litepcie_pci_probe(struct pci_dev *dev, const struct pci_device_id *i
 	}
 	litepcie_dev->host_dma_addr = dmam_alloc_coherent(
 				&dev->dev,
-				512,
+				LITEPCIE_DMA_BUF_SIZE,
 				&litepcie_dev->dma_addr,
 				GFP_KERNEL);
 	if (!litepcie_dev->host_dma_addr){
