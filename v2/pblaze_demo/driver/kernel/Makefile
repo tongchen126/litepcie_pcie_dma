@@ -1,0 +1,21 @@
+# Makefile for kernel module
+KERNEL_VERSION:=$(shell uname -r)
+KERNEL_PATH?=/lib/modules/$(KERNEL_VERSION)/build
+ARCH?=$(shell uname -m)
+
+obj-m = litepcie.o liteuart.o
+litepcie-objs = dma.o
+#liteuart-objs = liteuart.o
+
+
+all: litepcie.ko liteuart.ko
+
+litepcie.ko: dma.c
+	make -C $(KERNEL_PATH) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) M=$(shell pwd) modules
+
+liteuart.ko: liteuart.c
+	make -C $(KERNEL_PATH) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) M=$(shell pwd) modules
+
+clean:
+	make -C $(KERNEL_PATH) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) M=$(shell pwd) clean
+	rm -f *~

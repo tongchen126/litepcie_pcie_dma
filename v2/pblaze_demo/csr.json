@@ -1,0 +1,533 @@
+{
+    "csr_bases": {
+        "ctrl": 301989888,
+        "ddrphy": 301991936,
+        "identifier_mem": 301993984,
+        "leds": 301996032,
+        "pcie_host_pcie2wb_dma": 301998080,
+        "pcie_host_wb2pcie_dma": 302000128,
+        "pcie_irq_test": 302002176,
+        "pcie_msi": 302004224,
+        "pcie_phy": 302006272,
+        "sdram": 302008320,
+        "timer0": 302010368,
+        "uart": 302012416
+    },
+    "csr_registers": {
+        "ctrl_reset": {
+            "addr": 301989888,
+            "size": 1,
+            "type": "rw"
+        },
+        "ctrl_scratch": {
+            "addr": 301989892,
+            "size": 1,
+            "type": "rw"
+        },
+        "ctrl_bus_errors": {
+            "addr": 301989896,
+            "size": 1,
+            "type": "ro"
+        },
+        "ddrphy_rst": {
+            "addr": 301991936,
+            "size": 1,
+            "type": "rw"
+        },
+        "ddrphy_half_sys8x_taps": {
+            "addr": 301991940,
+            "size": 1,
+            "type": "rw"
+        },
+        "ddrphy_wlevel_en": {
+            "addr": 301991944,
+            "size": 1,
+            "type": "rw"
+        },
+        "ddrphy_wlevel_strobe": {
+            "addr": 301991948,
+            "size": 1,
+            "type": "rw"
+        },
+        "ddrphy_cdly_rst": {
+            "addr": 301991952,
+            "size": 1,
+            "type": "rw"
+        },
+        "ddrphy_cdly_inc": {
+            "addr": 301991956,
+            "size": 1,
+            "type": "rw"
+        },
+        "ddrphy_dly_sel": {
+            "addr": 301991960,
+            "size": 1,
+            "type": "rw"
+        },
+        "ddrphy_rdly_dq_rst": {
+            "addr": 301991964,
+            "size": 1,
+            "type": "rw"
+        },
+        "ddrphy_rdly_dq_inc": {
+            "addr": 301991968,
+            "size": 1,
+            "type": "rw"
+        },
+        "ddrphy_rdly_dq_bitslip_rst": {
+            "addr": 301991972,
+            "size": 1,
+            "type": "rw"
+        },
+        "ddrphy_rdly_dq_bitslip": {
+            "addr": 301991976,
+            "size": 1,
+            "type": "rw"
+        },
+        "ddrphy_wdly_dq_rst": {
+            "addr": 301991980,
+            "size": 1,
+            "type": "rw"
+        },
+        "ddrphy_wdly_dq_inc": {
+            "addr": 301991984,
+            "size": 1,
+            "type": "rw"
+        },
+        "ddrphy_wdly_dqs_rst": {
+            "addr": 301991988,
+            "size": 1,
+            "type": "rw"
+        },
+        "ddrphy_wdly_dqs_inc": {
+            "addr": 301991992,
+            "size": 1,
+            "type": "rw"
+        },
+        "ddrphy_wdly_dq_bitslip_rst": {
+            "addr": 301991996,
+            "size": 1,
+            "type": "rw"
+        },
+        "ddrphy_wdly_dq_bitslip": {
+            "addr": 301992000,
+            "size": 1,
+            "type": "rw"
+        },
+        "ddrphy_rdphase": {
+            "addr": 301992004,
+            "size": 1,
+            "type": "rw"
+        },
+        "ddrphy_wrphase": {
+            "addr": 301992008,
+            "size": 1,
+            "type": "rw"
+        },
+        "leds_out": {
+            "addr": 301996032,
+            "size": 1,
+            "type": "rw"
+        },
+        "pcie_host_pcie2wb_dma_dma_rd_enable": {
+            "addr": 301998080,
+            "size": 1,
+            "type": "rw"
+        },
+        "pcie_host_pcie2wb_dma_host_addr": {
+            "addr": 301998084,
+            "size": 1,
+            "type": "rw"
+        },
+        "pcie_host_pcie2wb_dma_length": {
+            "addr": 301998088,
+            "size": 1,
+            "type": "rw"
+        },
+        "pcie_host_pcie2wb_dma_bus_addr": {
+            "addr": 301998092,
+            "size": 1,
+            "type": "rw"
+        },
+        "pcie_host_pcie2wb_dma_rd_enable": {
+            "addr": 301998096,
+            "size": 1,
+            "type": "rw"
+        },
+        "pcie_host_pcie2wb_dma_irq_disable": {
+            "addr": 301998100,
+            "size": 1,
+            "type": "rw"
+        },
+        "pcie_host_pcie2wb_dma_wb_dma_test1": {
+            "addr": 301998104,
+            "size": 1,
+            "type": "ro"
+        },
+        "pcie_host_pcie2wb_dma_wb_dma_test2": {
+            "addr": 301998108,
+            "size": 1,
+            "type": "ro"
+        },
+        "pcie_host_pcie2wb_dma_wb_dma_test3": {
+            "addr": 301998112,
+            "size": 1,
+            "type": "ro"
+        },
+        "pcie_host_pcie2wb_dma_test1": {
+            "addr": 301998116,
+            "size": 1,
+            "type": "ro"
+        },
+        "pcie_host_pcie2wb_dma_test2": {
+            "addr": 301998120,
+            "size": 1,
+            "type": "ro"
+        },
+        "pcie_host_wb2pcie_dma_dma_wr_enable": {
+            "addr": 302000128,
+            "size": 1,
+            "type": "rw"
+        },
+        "pcie_host_wb2pcie_dma_host_addr": {
+            "addr": 302000132,
+            "size": 1,
+            "type": "rw"
+        },
+        "pcie_host_wb2pcie_dma_length": {
+            "addr": 302000136,
+            "size": 1,
+            "type": "rw"
+        },
+        "pcie_host_wb2pcie_dma_bus_addr": {
+            "addr": 302000140,
+            "size": 1,
+            "type": "rw"
+        },
+        "pcie_host_wb2pcie_dma_wr_enable": {
+            "addr": 302000144,
+            "size": 1,
+            "type": "rw"
+        },
+        "pcie_host_wb2pcie_dma_irq_disable": {
+            "addr": 302000148,
+            "size": 1,
+            "type": "rw"
+        },
+        "pcie_host_wb2pcie_dma_wb_dma_test1": {
+            "addr": 302000152,
+            "size": 1,
+            "type": "ro"
+        },
+        "pcie_host_wb2pcie_dma_test1": {
+            "addr": 302000156,
+            "size": 1,
+            "type": "ro"
+        },
+        "pcie_host_wb2pcie_dma_test2": {
+            "addr": 302000160,
+            "size": 1,
+            "type": "ro"
+        },
+        "pcie_irq_test_irq1_csr": {
+            "addr": 302002176,
+            "size": 1,
+            "type": "rw"
+        },
+        "pcie_irq_test_irq2_csr": {
+            "addr": 302002180,
+            "size": 1,
+            "type": "rw"
+        },
+        "pcie_irq_test_irq3_csr": {
+            "addr": 302002184,
+            "size": 1,
+            "type": "rw"
+        },
+        "pcie_msi_enable": {
+            "addr": 302004224,
+            "size": 1,
+            "type": "rw"
+        },
+        "pcie_phy_link_status": {
+            "addr": 302006272,
+            "size": 1,
+            "type": "ro"
+        },
+        "pcie_phy_msi_enable": {
+            "addr": 302006276,
+            "size": 1,
+            "type": "ro"
+        },
+        "pcie_phy_msix_enable": {
+            "addr": 302006280,
+            "size": 1,
+            "type": "ro"
+        },
+        "pcie_phy_bus_master_enable": {
+            "addr": 302006284,
+            "size": 1,
+            "type": "ro"
+        },
+        "pcie_phy_max_request_size": {
+            "addr": 302006288,
+            "size": 1,
+            "type": "ro"
+        },
+        "pcie_phy_max_payload_size": {
+            "addr": 302006292,
+            "size": 1,
+            "type": "ro"
+        },
+        "sdram_dfii_control": {
+            "addr": 302008320,
+            "size": 1,
+            "type": "rw"
+        },
+        "sdram_dfii_pi0_command": {
+            "addr": 302008324,
+            "size": 1,
+            "type": "rw"
+        },
+        "sdram_dfii_pi0_command_issue": {
+            "addr": 302008328,
+            "size": 1,
+            "type": "rw"
+        },
+        "sdram_dfii_pi0_address": {
+            "addr": 302008332,
+            "size": 1,
+            "type": "rw"
+        },
+        "sdram_dfii_pi0_baddress": {
+            "addr": 302008336,
+            "size": 1,
+            "type": "rw"
+        },
+        "sdram_dfii_pi0_wrdata": {
+            "addr": 302008340,
+            "size": 4,
+            "type": "rw"
+        },
+        "sdram_dfii_pi0_rddata": {
+            "addr": 302008356,
+            "size": 4,
+            "type": "ro"
+        },
+        "sdram_dfii_pi1_command": {
+            "addr": 302008372,
+            "size": 1,
+            "type": "rw"
+        },
+        "sdram_dfii_pi1_command_issue": {
+            "addr": 302008376,
+            "size": 1,
+            "type": "rw"
+        },
+        "sdram_dfii_pi1_address": {
+            "addr": 302008380,
+            "size": 1,
+            "type": "rw"
+        },
+        "sdram_dfii_pi1_baddress": {
+            "addr": 302008384,
+            "size": 1,
+            "type": "rw"
+        },
+        "sdram_dfii_pi1_wrdata": {
+            "addr": 302008388,
+            "size": 4,
+            "type": "rw"
+        },
+        "sdram_dfii_pi1_rddata": {
+            "addr": 302008404,
+            "size": 4,
+            "type": "ro"
+        },
+        "sdram_dfii_pi2_command": {
+            "addr": 302008420,
+            "size": 1,
+            "type": "rw"
+        },
+        "sdram_dfii_pi2_command_issue": {
+            "addr": 302008424,
+            "size": 1,
+            "type": "rw"
+        },
+        "sdram_dfii_pi2_address": {
+            "addr": 302008428,
+            "size": 1,
+            "type": "rw"
+        },
+        "sdram_dfii_pi2_baddress": {
+            "addr": 302008432,
+            "size": 1,
+            "type": "rw"
+        },
+        "sdram_dfii_pi2_wrdata": {
+            "addr": 302008436,
+            "size": 4,
+            "type": "rw"
+        },
+        "sdram_dfii_pi2_rddata": {
+            "addr": 302008452,
+            "size": 4,
+            "type": "ro"
+        },
+        "sdram_dfii_pi3_command": {
+            "addr": 302008468,
+            "size": 1,
+            "type": "rw"
+        },
+        "sdram_dfii_pi3_command_issue": {
+            "addr": 302008472,
+            "size": 1,
+            "type": "rw"
+        },
+        "sdram_dfii_pi3_address": {
+            "addr": 302008476,
+            "size": 1,
+            "type": "rw"
+        },
+        "sdram_dfii_pi3_baddress": {
+            "addr": 302008480,
+            "size": 1,
+            "type": "rw"
+        },
+        "sdram_dfii_pi3_wrdata": {
+            "addr": 302008484,
+            "size": 4,
+            "type": "rw"
+        },
+        "sdram_dfii_pi3_rddata": {
+            "addr": 302008500,
+            "size": 4,
+            "type": "ro"
+        },
+        "timer0_load": {
+            "addr": 302010368,
+            "size": 1,
+            "type": "rw"
+        },
+        "timer0_reload": {
+            "addr": 302010372,
+            "size": 1,
+            "type": "rw"
+        },
+        "timer0_en": {
+            "addr": 302010376,
+            "size": 1,
+            "type": "rw"
+        },
+        "timer0_update_value": {
+            "addr": 302010380,
+            "size": 1,
+            "type": "rw"
+        },
+        "timer0_value": {
+            "addr": 302010384,
+            "size": 1,
+            "type": "ro"
+        },
+        "timer0_ev_status": {
+            "addr": 302010388,
+            "size": 1,
+            "type": "ro"
+        },
+        "timer0_ev_pending": {
+            "addr": 302010392,
+            "size": 1,
+            "type": "rw"
+        },
+        "timer0_ev_enable": {
+            "addr": 302010396,
+            "size": 1,
+            "type": "rw"
+        },
+        "uart_rxtx": {
+            "addr": 302012416,
+            "size": 1,
+            "type": "rw"
+        },
+        "uart_txfull": {
+            "addr": 302012420,
+            "size": 1,
+            "type": "ro"
+        },
+        "uart_rxempty": {
+            "addr": 302012424,
+            "size": 1,
+            "type": "ro"
+        },
+        "uart_ev_status": {
+            "addr": 302012428,
+            "size": 1,
+            "type": "ro"
+        },
+        "uart_ev_pending": {
+            "addr": 302012432,
+            "size": 1,
+            "type": "rw"
+        },
+        "uart_ev_enable": {
+            "addr": 302012436,
+            "size": 1,
+            "type": "rw"
+        },
+        "uart_txempty": {
+            "addr": 302012440,
+            "size": 1,
+            "type": "ro"
+        },
+        "uart_rxfull": {
+            "addr": 302012444,
+            "size": 1,
+            "type": "ro"
+        }
+    },
+    "constants": {
+        "config_clock_frequency": 100000000,
+        "config_cpu_has_interrupt": null,
+        "config_cpu_reset_addr": 268435456,
+        "config_cpu_type_rocket": null,
+        "config_cpu_variant_linuxd": null,
+        "config_cpu_human_name": "rocketrv64[imac]",
+        "config_cpu_nop": "nop",
+        "config_with_build_time": null,
+        "irq1_interrupt": 0,
+        "irq2_interrupt": 1,
+        "irq3_interrupt": 2,
+        "pcie2wishbone_interrupt": 3,
+        "wishbone2pcie_interrupt": 4,
+        "config_csr_data_width": 32,
+        "config_csr_alignment": 32,
+        "config_bus_standard": "wishbone",
+        "config_bus_data_width": 32,
+        "config_bus_address_width": 32,
+        "config_cpu_has_dma_bus": null,
+        "timer0_interrupt": 1,
+        "uart_interrupt": 0
+    },
+    "memories": {
+        "rom": {
+            "base": 268435456,
+            "size": 131072,
+            "type": "cached"
+        },
+        "sram": {
+            "base": 285212672,
+            "size": 8192,
+            "type": "cached"
+        },
+        "main_ram": {
+            "base": 2147483648,
+            "size": 1073741824,
+            "type": "cached"
+        },
+        "csr": {
+            "base": 301989888,
+            "size": 65536,
+            "type": "io"
+        }
+    }
+}
