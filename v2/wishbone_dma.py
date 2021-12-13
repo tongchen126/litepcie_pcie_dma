@@ -33,7 +33,7 @@ class WishboneDMAReaderMod(Module, AutoCSR):
     source : Record("data")
         Source for MMAP word results from reading.
     """
-    def __init__(self, bus, endianness="little", with_csr=False,leds=None):
+    def __init__(self, bus, endianness="little", with_csr=False):
         assert isinstance(bus, wishbone.Interface)
         self.bus    = bus
         self.sink   = sink   = stream.Endpoint([("address", bus.adr_width, ("last", 1))])
@@ -111,7 +111,7 @@ class WishboneDMAReaderMod(Module, AutoCSR):
 # LiteWishbone2PCIeDMA ---------------------------------------------------------------------------
 
 class LiteWishbone2PCIeDMA(Module,AutoCSR):
-    def __init__(self, endpoint,data_width = 32,leds=None):
+    def __init__(self, endpoint,data_width = 32):
 
         port_wr = endpoint.crossbar.get_master_port(write_only=True)
         self.submodules.dma_wr = dma_wr = LitePCIeDMAWriter(
@@ -240,7 +240,7 @@ class WishboneDMAWriterMod(Module, AutoCSR):
 # LitePCIe2WishboneDMA ---------------------------------------------------------------------------
 
 class LitePCIe2WishboneDMA(Module, AutoCSR):
-    def __init__(self, endpoint, data_width=32, leds=None):
+    def __init__(self, endpoint, data_width=32):
         port_rd = endpoint.crossbar.get_master_port()
         self.submodules.dma_rd = dma_rd = LitePCIeDMAReader(
             endpoint=endpoint,
