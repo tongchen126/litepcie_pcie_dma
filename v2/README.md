@@ -1,7 +1,7 @@
-Add DMA controller to SoC's dma bus:
-
+# Add DMA controller to SoC's dma bus:
+```
 from wishbone_dma import LitePCIe2WishboneDMA,LiteWishbone2PCIeDMA
-pcie_host_wb2pcie_dma = LiteWishbone2PCIeDMA(endpoint,leds=leds)
+pcie_host_wb2pcie_dma = LiteWishbone2PCIeDMA(endpoint)
 self.submodules.pcie_host_wb2pcie_dma = pcie_host_wb2pcie_dma
 self.dma_bus.add_master("pcie_master_wb2pcie",pcie_host_wb2pcie_dma.bus_wr)
 pcie_host_pcie2wb_dma = LitePCIe2WishboneDMA(endpoint)
@@ -24,12 +24,12 @@ if with_msi:
         self.comb += msi.irqs[i].eq(v)
         self.add_constant(k + "_INTERRUPT", i)
 
+```
 
-
-Kernel Demo: 
+# Kernel Demo: 
 dma.c
 
-Usage Demo:
+# Usage Demo:
 After finishing building the bitstream, open the 'csr.json' file in the build directory.
 Write to the CSR register to specify Host Addr(PC), SoC bus addr and length, then write to the enable register to start the DMA process.
 If 'irq_disable' is set to zero, then a interrupt will be triggered to the PC after finishing the process.
