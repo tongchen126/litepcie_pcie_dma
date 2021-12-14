@@ -123,8 +123,8 @@ class LiteWishbone2PCIeDMA(Module,AutoCSR):
         self.submodules.fifo_wr = fifo_wr = stream.SyncFIFO(descriptor_layout(), 16)
 
         self.host_addr = host_addr = CSRStorage(32,description="Host ADDR",reset=0)
-        self.length = length = CSRStorage(32,description="Length",reset=128)
-        self.bus_addr = bus_addr = CSRStorage(32,description="SoC Bus ADDR",reset=0x3000_0000)
+        self.length = length = CSRStorage(32,description="Length",reset=0)
+        self.bus_addr = bus_addr = CSRStorage(32,description="SoC Bus ADDR",reset=0)
         self.wr_enable = wr_enable = CSRStorage(1,description="Write Table Enable",reset=0)
         self.irq_disable = irq_disable = CSRStorage(1, description="Disable Wishbone2PCIe IRQ", reset=0)
         self.irq = Signal(reset=0)
@@ -141,11 +141,9 @@ class LiteWishbone2PCIeDMA(Module,AutoCSR):
         dma_enable = Signal(reset=0)
         pending = Signal(reset=0)
 
-        self.comb += [wb_dma.enable.eq(dma_enable)]
+        self.comb += [wb_dma.enable.eq(dma_enable),wb_dma.base.eq(bus_addr.storage),wb_dma.length.eq(length.storage)]
         self.sync += [
             If(wr_enable.storage & wr_enable.re,
-               wb_dma.base.eq(bus_addr.storage),
-               wb_dma.length.eq(length.storage),
                dma_enable.eq(1),
                pending.eq(1),
             ).Elif(pending & wb_dma.done,
@@ -251,8 +249,8 @@ class LitePCIe2WishboneDMA(Module, AutoCSR):
         self.submodules.fifo_rd = fifo_rd = stream.SyncFIFO(descriptor_layout(), 16)
 
         self.host_addr = host_addr = CSRStorage(32, description="Host ADDR", reset=0)
-        self.length = length = CSRStorage(32, description="Length", reset=128)
-        self.bus_addr = bus_addr = CSRStorage(32, description="SoC Bus ADDR", reset=0x3000_0000)
+        self.length = length = CSRStorage(32, description="Length", reset=0)
+        self.bus_addr = bus_addr = CSRStorage(32, description="SoC Bus ADDR", reset=0)
         self.rd_enable = rd_enable = CSRStorage(1, description="Read Enable", reset=0)
         self.irq_disable = irq_disable = CSRStorage(1, description="Disable PCIe2Wishbone IRQ", reset=0)
 
@@ -268,11 +266,9 @@ class LitePCIe2WishboneDMA(Module, AutoCSR):
         dma_enable = Signal(reset=0)
         pending = Signal(reset=0)
 
-        self.comb += [wb_dma.enable.eq(dma_enable),If(pending & wb_dma.done,self.irq.eq(~self.irq_disable.storage))]
+        self.comb += [wb_dma.enable.eq(dma_enable),wb_dma.base.eq(bus_addr.storage),wb_dma.length.eq(length.storage)]
         self.sync += [
             If(rd_enable.storage & rd_enable.re,
-               wb_dma.base.eq(bus_addr.storage),
-               wb_dma.length.eq(length.storage),
                dma_enable.eq(1),
                pending.eq(1),
             ).Elif(pending & wb_dma.done,
@@ -283,7 +279,7 @@ class LitePCIe2WishboneDMA(Module, AutoCSR):
                      dma_enable.eq(0)
             )
         ]
-
+        self.comb += [If(pending & wb_dma.done,self.irq.eq(~self.irq_disable.storage))]
         self.comb += [
             dma_rd.source.connect(conv_rd.sink),
             conv_rd.source.connect(wb_dma.sink),
