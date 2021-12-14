@@ -29,7 +29,11 @@ if with_msi:
 # Kernel Demo: 
 dma.c
 
+This mainly allocates the DMA buffer and informs when the interrupt is triggered(i.e., the DMA process has finished).
+
 # Usage Demo:
-After finishing building the bitstream, open the 'csr.json' file in the build directory.
-Write to the CSR register to specify Host Addr(PC), SoC bus addr and length, then write to the enable register to start the DMA process.
-If 'irq_disable' is set to zero, then a interrupt will be triggered to the PC after finishing the process.
+After building the bitstream, open the 'csr.json' file in the build directory.
+Write to the corresponding CSR register to specify Host Addr(PC), SoC bus address, and length.
+Then write to the enable CSR register to start the DMA process.
+Writing to the CSR register can be done by Litex pre-boot command promot or in a kernel module.
+If 'irq_disable' is set to zero, a interrupt will be triggered to the PC after finishing the process.
