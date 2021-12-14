@@ -42,3 +42,7 @@ Write to the corresponding CSR register to specify Host Addr(PC), SoC bus addres
 Then write to the enable CSR register to start the DMA process.
 Writing to the CSR register can be done by Litex pre-boot command promot or in a kernel module.
 If 'irq_disable' is set to zero, a interrupt will be triggered to the PC after finishing the process.
+
+
+# Test
+Data integrity has been tested under Pblaze3(a repurposed Kintex7-325t based board), running Vexriscv-smp & Rocket cpu at 100MHz.
