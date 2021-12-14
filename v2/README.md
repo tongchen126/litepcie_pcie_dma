@@ -1,3 +1,13 @@
+This work is based on Litex project. It combines WishboneDMA and PCIeDMA function and enables DMA transferring between Host PCIe Address Space and the Wishbone DMA bus of the SoC. The address and length of DMA transaction and the enable register is exported in CSR regions.
+
+# Source File
+wishbone_dma.py
+
+# Kernel Demo: 
+dma.c
+
+This mainly allocates the DMA buffer and informs when the interrupt is triggered(i.e., the DMA process has finished).
+
 # Add DMA controller to SoC's dma bus:
 ```
 from wishbone_dma import LitePCIe2WishboneDMA,LiteWishbone2PCIeDMA
@@ -25,11 +35,6 @@ if with_msi:
         self.add_constant(k + "_INTERRUPT", i)
 
 ```
-
-# Kernel Demo: 
-dma.c
-
-This mainly allocates the DMA buffer and informs when the interrupt is triggered(i.e., the DMA process has finished).
 
 # Usage Demo:
 After building the bitstream, open the 'csr.json' file in the build directory.
