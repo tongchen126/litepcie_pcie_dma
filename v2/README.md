@@ -1,4 +1,4 @@
-This work is based on Litex project. It combines WishboneDMA and PCIeDMA function and enables DMA transferring between Host PCIe Address Space and the Wishbone DMA bus of the SoC. The address and length of DMA transaction and the enable register is exported in CSR regions.
+**This work is based on Litex project. It combines WishboneDMA and PCIeDMA function and enables DMA transferring between Host Address Space and the Wishbone DMA bus of the SoC.**
 
 # Source File
 wishbone_dma.py
@@ -8,7 +8,7 @@ dma.c
 
 This mainly allocates the DMA buffer and informs when the interrupt is triggered(i.e., the DMA process has finished).
 
-# Add DMA controller to SoC's dma bus:
+# How to use(Add DMA controller to SoC's dma bus):
 ```
 from wishbone_dma import LitePCIe2WishboneDMA,LiteWishbone2PCIeDMA
 pcie_host_wb2pcie_dma = LiteWishbone2PCIeDMA(endpoint)
@@ -36,13 +36,18 @@ if with_msi:
 
 ```
 
-# Usage Demo:
+# How to start the DMA(Litex commandline prompt):
 After building the bitstream, open the 'csr.json' file in the build directory.
 Write to the corresponding CSR register to specify Host Addr(PC), SoC bus address, and length.
 Then write to the enable CSR register to start the DMA process.
-Writing to the CSR register can be done by Litex pre-boot command promot or in a kernel module.
-If 'irq_disable' is set to zero, a interrupt will be triggered to the PC after finishing the process.
+**Writing to the CSR register can be done by Litex pre-boot commandline prompt or in a kernel module.**
+
+Write to the CSR:
+![CSR](https://github.com/tongchen126/litepcie_pcie_dma/blob/master/v2/pblaze_demo/CSR.png)
+
+After a successful DMA, a MSI IRQ has been triggered to HOST:
+![INTERRUPT Triggered by HOST](https://github.com/tongchen126/litepcie_pcie_dma/blob/master/v2/pblaze_demo/INTERRUPT.png)
 
 
 # Test
-Data integrity has been tested under Pblaze3(a repurposed Kintex7-325t based board), running Vexriscv-smp & Rocket cpu at 100MHz.
+Basic Data integrity has been tested under Pblaze3(a repurposed Kintex7-325t based board), running Vexriscv-smp & Rocket cpu at 100MHz.
