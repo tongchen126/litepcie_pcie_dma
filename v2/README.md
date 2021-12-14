@@ -1,4 +1,5 @@
-**This work is based on Litex project. It combines WishboneDMA and PCIeDMA function and enables DMA transferring between Host Address Space and the Wishbone DMA bus of the SoC.**
+**This work is based on [Litex project](https://github.com/enjoy-digital/litex).  
+It combines WishboneDMA and PCIeDMA function and enables DMA transferring between Host Address Space and the Wishbone DMA bus of the SoC.**
 
 # Source File
 wishbone_dma.py
@@ -50,4 +51,4 @@ After a successful DMA, a MSI IRQ has been triggered to HOST:
 
 
 # Test
-Basic Data integrity has been tested using Pblaze3(a repurposed Kintex7 325t based board), running on Vexriscv-smp & Rocket cpu at 100MHz.
+Basic Data integrity has been tested using [Pblaze3,a repurposed Kintex7 325t based board](https://www.tweaktown.com/reviews/6797/memblaze-pblaze3l-1-2tb-enterprise-pcie-ssd-review/index.html), running Vexriscv-smp/Rocket cpu at 100MHz.
