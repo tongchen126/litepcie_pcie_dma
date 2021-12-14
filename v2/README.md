@@ -6,7 +6,7 @@ wishbone_dma.py
 # Kernel Demo: 
 dma.c
 
-This mainly allocates the DMA buffer and informs when the interrupt is triggered(i.e., the DMA process has finished).
+This mainly allocates the DMA buffer and informs the user when the interrupt is triggered(i.e., the DMA process has finished).
 
 # How to use(Add DMA controller to SoC's dma bus):
 ```
@@ -37,7 +37,7 @@ if with_msi:
 ```
 
 # How to start the DMA(Litex commandline prompt):
-After building the bitstream, open the 'csr.json' file in the build directory.
+After building the bitstream, open the 'csr.json' file in the build directory and find the address of the DMA related registers.
 Write to the corresponding CSR register to specify Host Addr(PC), SoC bus address, and length.
 Then write to the enable CSR register to start the DMA process.
 **Writing to the CSR register can be done by Litex pre-boot commandline prompt or in a kernel module.**
@@ -50,4 +50,4 @@ After a successful DMA, a MSI IRQ has been triggered to HOST:
 
 
 # Test
-Basic Data integrity has been tested under Pblaze3(a repurposed Kintex7-325t based board), running Vexriscv-smp & Rocket cpu at 100MHz.
+Basic Data integrity has been tested using Pblaze3(a repurposed Kintex7 325t based board), running on Vexriscv-smp & Rocket cpu at 100MHz.
