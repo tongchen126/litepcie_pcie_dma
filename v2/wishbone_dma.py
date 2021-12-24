@@ -141,12 +141,10 @@ class LiteWishbone2PCIeDMA(Module,AutoCSR):
         dma_enable = Signal(reset=0)
         pending = Signal(reset=0)
 
-        self.comb += [wb_dma.enable.eq(dma_enable)]
+        self.comb += [wb_dma.enable.eq(dma_enable),wb_dma.base.eq(bus_addr.storage),wb_dma.length.eq(length.storage),]
         self.sync += [
             If(wr_enable.storage & wr_enable.re,
                dma_enable.eq(1),
-               wb_dma.base.eq(bus_addr.storage),
-               wb_dma.length.eq(length.storage),
                pending.eq(1),
             ).Elif(pending & wb_dma.done,
                    dma_enable.eq(0),
@@ -268,12 +266,10 @@ class LitePCIe2WishboneDMA(Module, AutoCSR):
         dma_enable = Signal(reset=0)
         pending = Signal(reset=0)
 
-        self.comb += [wb_dma.enable.eq(dma_enable)]
+        self.comb += [wb_dma.enable.eq(dma_enable),wb_dma.base.eq(bus_addr.storage),wb_dma.length.eq(length.storage),]
         self.sync += [
             If(rd_enable.storage & rd_enable.re,
                dma_enable.eq(1),
-               wb_dma.base.eq(bus_addr.storage),
-               wb_dma.length.eq(length.storage),
                pending.eq(1),
             ).Elif(pending & wb_dma.done,
                       dma_enable.eq(0),
