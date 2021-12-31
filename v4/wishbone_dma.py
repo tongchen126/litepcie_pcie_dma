@@ -182,7 +182,7 @@ class LiteWishbone2PCIeDMA(Module,AutoCSR):
         self.irq_disable = irq_disable = CSRStorage(1, description="Disable Wishbone2PCIe IRQ", reset=0)
         self.irq = Signal(reset=0)
 
-        self.bus_wr = wishbone.Interface()
+        self.bus_wr = wishbone.Interface(data_width=data_width)
         self.submodules.wb_dma = wb_dma = WishboneDMAReaderCtrl(self.bus_wr)
         wb_dma.add_ctrl()
         self.submodules.conv_wr = conv_wr = stream.Converter(nbits_from=data_width, nbits_to=endpoint.phy.data_width)
@@ -264,7 +264,7 @@ class LitePCIe2WishboneDMA(Module, AutoCSR):
         self.start = start = CSRStorage(1,description="Start DMA",reset=0)
         self.irq_disable = irq_disable = CSRStorage(1, description="Disable PCIe2Wishbone IRQ", reset=0)
 
-        self.bus_rd = wishbone.Interface()
+        self.bus_rd = wishbone.Interface(data_width=data_width)
         self.submodules.wb_dma = wb_dma = WishboneDMAWriterCtrl(self.bus_rd)
         wb_dma.add_ctrl()
         self.irq = Signal(reset=0)
