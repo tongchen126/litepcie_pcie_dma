@@ -176,9 +176,7 @@ class LiteWishbone2PCIeDMA(Module,AutoCSR):
         self.host_addr = host_addr = CSRStorage(32,description="Host ADDR",reset=0)
         self.length = length = CSRStorage(32,description="Length",reset=0)
         self.bus_addr = bus_addr = CSRStorage(32,description="SoC Bus ADDR",reset=0)
-        self.sc_depth = sc_depth = CSRStorage(32,description="Scatter Gather Depth",reset=0)
         self.wr_enable = wr_enable = CSRStorage(1,description="Write Table Enable",reset=0)
-        self.start = start = CSRStorage(1,description="Start DMA",reset=0)
         self.irq_disable = irq_disable = CSRStorage(1, description="Disable Wishbone2PCIe IRQ", reset=0)
         self.irq = Signal(reset=0)
 
@@ -193,7 +191,7 @@ class LiteWishbone2PCIeDMA(Module,AutoCSR):
         self.test1 = CSRStatus(32,reset=0)
         self.test2 = CSRStatus(32,reset=0)
         self.test3 = CSRStatus(32,reset=0)
-
+        
         self.comb += [
             wb_dma.enable.eq(dma_enable),
 
@@ -218,7 +216,7 @@ class LiteWishbone2PCIeDMA(Module,AutoCSR):
         ctrl_fsm = ResetInserter()(ctrl_fsm)
         self.submodules.ctrl_fsm = ctrl_fsm
         ctrl_fsm.act("IDLE",
-                     If(fifo_wr.source.valid & dma_wr_desc.ready & ((start.re & start.storage) | (start.storage & sc_finished!=0)),
+                     If(fifo_wr.source.valid & dma_wr_desc.ready,
                         NextState("RUN"),
                         NextValue(self.test1.status, self.test1.status + 1),
                         dma_wr_desc.valid.eq(1),
@@ -233,10 +231,7 @@ class LiteWishbone2PCIeDMA(Module,AutoCSR):
                        NextState("IDLE"),
                        NextValue(dma_enable, 0),
                        NextValue(sc_finished, sc_finished + 1),
-                       If(sc_finished + 1 == sc_depth.storage,
-                          NextValue(sc_finished, 0),
-                          self.irq.eq(~irq_disable.storage)
-                          ),
+                       self.irq.eq(~irq_disable.storage)
                     )
         )
 
@@ -259,9 +254,7 @@ class LitePCIe2WishboneDMA(Module, AutoCSR):
         self.host_addr = host_addr = CSRStorage(32, description="Host ADDR", reset=0)
         self.length = length = CSRStorage(32, description="Length", reset=0)
         self.bus_addr = bus_addr = CSRStorage(32, description="SoC Bus ADDR", reset=0)
-        self.sc_depth = sc_depth = CSRStorage(32,description="Scatter Gather Depth",reset=0)
         self.rd_enable = rd_enable = CSRStorage(1, description="Read Enable", reset=0)
-        self.start = start = CSRStorage(1,description="Start DMA",reset=0)
         self.irq_disable = irq_disable = CSRStorage(1, description="Disable PCIe2Wishbone IRQ", reset=0)
 
         self.bus_rd = wishbone.Interface(data_width=data_width)
@@ -301,7 +294,7 @@ class LitePCIe2WishboneDMA(Module, AutoCSR):
         ctrl_fsm = ResetInserter()(ctrl_fsm)
         self.submodules.ctrl_fsm = ctrl_fsm
         ctrl_fsm.act("IDLE",
-                     If(fifo_rd.source.valid & dma_rd_desc.ready & ((start.re & start.storage) | (start.storage & sc_finished!=0)),
+                     If(fifo_rd.source.valid & dma_rd_desc.ready,
                         NextState("RUN"),
                         NextValue(self.test1.status, self.test1.status + 1),
                         dma_rd_desc.valid.eq(1),
@@ -316,10 +309,7 @@ class LitePCIe2WishboneDMA(Module, AutoCSR):
                        NextState("IDLE"),
                        NextValue(sc_finished, sc_finished + 1),
                        NextValue(dma_enable, 0),
-                       If(sc_finished + 1 == sc_depth.storage,
-                          NextValue(sc_finished, 0),
-                          self.irq.eq(~irq_disable.storage)
-                          ),
+                       self.irq.eq(~irq_disable.storage)
                     )
         )
 
