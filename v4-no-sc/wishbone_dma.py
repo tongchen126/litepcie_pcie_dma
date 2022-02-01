@@ -168,7 +168,7 @@ class LiteWishbone2PCIeDMA(Module,AutoCSR):
             with_table=False)
 
         dma_wr_desc = stream.Endpoint(descriptor_layout())
-        self.submodules.dma_fifo = dma_fifo = stream.SyncFIFO(descriptor_layout(), 1)
+        self.submodules.dma_fifo = dma_fifo = stream.SyncFIFO(descriptor_layout(), 16)
 
         desc_wr = stream.Endpoint(dma_descriptor_layout())
         self.submodules.fifo_wr = fifo_wr = stream.SyncFIFO(dma_descriptor_layout(), 16)
@@ -337,7 +337,7 @@ class LiteWishbone2PCIeDMANative(Module, AutoCSR):
             with_table=False)
 
         dma_wr_desc = stream.Endpoint(descriptor_layout())
-        self.submodules.dma_fifo = dma_fifo = stream.SyncFIFO(descriptor_layout(), 1)
+        self.submodules.dma_fifo = dma_fifo = stream.SyncFIFO(descriptor_layout(), 16)
 
         desc_wr = stream.Endpoint(dma_descriptor_layout())
         self.submodules.fifo_wr = fifo_wr = stream.SyncFIFO(dma_descriptor_layout(), 16)
