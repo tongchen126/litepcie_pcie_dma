@@ -168,7 +168,7 @@ class LiteWishbone2PCIeDMA(Module,AutoCSR):
             with_table=False)
 
         dma_wr_desc = stream.Endpoint(descriptor_layout())
-        self.submodules.dma_fifo = dma_fifo = stream.SyncFIFO(descriptor_layout(), 16)
+        self.submodules.dma_fifo = dma_fifo = stream.SyncFIFO(descriptor_layout(), 1)
 
         desc_wr = stream.Endpoint(dma_descriptor_layout())
         self.submodules.fifo_wr = fifo_wr = stream.SyncFIFO(dma_descriptor_layout(), 16)
@@ -186,7 +186,6 @@ class LiteWishbone2PCIeDMA(Module,AutoCSR):
         self.submodules.conv_wr = conv_wr = stream.Converter(nbits_from=data_width, nbits_to=endpoint.phy.data_width)
 
         dma_enable = Signal(reset=0)
-        sc_finished = Signal(32,reset=0)
 
         self.test1 = CSRStatus(32,reset=0)
         self.test2 = CSRStatus(32,reset=0)
@@ -230,7 +229,6 @@ class LiteWishbone2PCIeDMA(Module,AutoCSR):
                        NextValue(self.test3.status, self.test3.status + 1),
                        NextState("IDLE"),
                        NextValue(dma_enable, 0),
-                       NextValue(sc_finished, sc_finished + 1),
                        self.irq.eq(~irq_disable.storage)
                     )
         )
@@ -247,7 +245,7 @@ class LitePCIe2WishboneDMA(Module, AutoCSR):
             with_table=False)
 
         dma_rd_desc = stream.Endpoint(descriptor_layout())
-        self.submodules.dma_fifo = dma_fifo = stream.SyncFIFO(descriptor_layout(), 16)
+        self.submodules.dma_fifo = dma_fifo = stream.SyncFIFO(descriptor_layout(), 1)
         desc_rd = stream.Endpoint(dma_descriptor_layout())
         self.submodules.fifo_rd = fifo_rd = stream.SyncFIFO(dma_descriptor_layout(), 16)
 
@@ -264,7 +262,6 @@ class LitePCIe2WishboneDMA(Module, AutoCSR):
 
         self.submodules.conv_rd = conv_rd = stream.Converter(nbits_from=endpoint.phy.data_width, nbits_to=data_width)
         dma_enable = Signal(reset=0)
-        sc_finished = Signal(32,reset=0)
         
         self.test1 = CSRStatus(32,reset=0)
         self.test2 = CSRStatus(32,reset=0)
@@ -307,7 +304,6 @@ class LitePCIe2WishboneDMA(Module, AutoCSR):
                        fifo_rd.source.ready.eq(1),
                        NextValue(self.test3.status, self.test3.status + 1),
                        NextState("IDLE"),
-                       NextValue(sc_finished, sc_finished + 1),
                        NextValue(dma_enable, 0),
                        self.irq.eq(~irq_disable.storage)
                     )
@@ -355,7 +351,6 @@ class LiteWishbone2PCIeDMANative(Module, AutoCSR):
         self.submodules.conv_wr = conv_wr = stream.Converter(nbits_from=data_width, nbits_to=endpoint.phy.data_width)
 
         dma_enable = Signal(reset=0)
-        sc_finished = Signal(32, reset=0)
 
         self.test1 = CSRStatus(32, reset=0)
         self.test2 = CSRStatus(32, reset=0)
@@ -399,7 +394,6 @@ class LiteWishbone2PCIeDMANative(Module, AutoCSR):
                         NextValue(self.test3.status, self.test3.status + 1),
                         NextState("IDLE"),
                         NextValue(dma_enable, 0),
-                        NextValue(sc_finished, sc_finished + 1),
                         self.ready.eq(1)
                         )
                      )

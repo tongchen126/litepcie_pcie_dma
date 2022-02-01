@@ -218,7 +218,7 @@ class LiteWishbone2PCIeDMA(Module,AutoCSR):
         ctrl_fsm = ResetInserter()(ctrl_fsm)
         self.submodules.ctrl_fsm = ctrl_fsm
         ctrl_fsm.act("IDLE",
-                     If(fifo_wr.source.valid & dma_wr_desc.ready & ((start.re & start.storage) | (start.storage & sc_finished!=0)),
+                     If(fifo_wr.source.valid & dma_wr_desc.ready & ((start.re & start.storage) | (start.storage & (sc_finished!=0))),
                         NextState("RUN"),
                         NextValue(self.test1.status, self.test1.status + 1),
                         dma_wr_desc.valid.eq(1),
@@ -232,11 +232,10 @@ class LiteWishbone2PCIeDMA(Module,AutoCSR):
                        NextValue(self.test3.status, self.test3.status + 1),
                        NextState("IDLE"),
                        NextValue(dma_enable, 0),
-                       NextValue(sc_finished, sc_finished + 1),
                        If(sc_finished + 1 == sc_depth.storage,
                           NextValue(sc_finished, 0),
                           self.irq.eq(~irq_disable.storage)
-                          ),
+                        ).Else(NextValue(sc_finished, sc_finished + 1)),
                     )
         )
 
@@ -252,7 +251,7 @@ class LitePCIe2WishboneDMA(Module, AutoCSR):
             with_table=False)
 
         dma_rd_desc = stream.Endpoint(descriptor_layout())
-        self.submodules.dma_fifo = dma_fifo = stream.SyncFIFO(descriptor_layout(), 16)
+        self.submodules.dma_fifo = dma_fifo = stream.SyncFIFO(descriptor_layout(), 1)
         desc_rd = stream.Endpoint(dma_descriptor_layout())
         self.submodules.fifo_rd = fifo_rd = stream.SyncFIFO(dma_descriptor_layout(), 16)
 
@@ -301,7 +300,7 @@ class LitePCIe2WishboneDMA(Module, AutoCSR):
         ctrl_fsm = ResetInserter()(ctrl_fsm)
         self.submodules.ctrl_fsm = ctrl_fsm
         ctrl_fsm.act("IDLE",
-                     If(fifo_rd.source.valid & dma_rd_desc.ready & ((start.re & start.storage) | (start.storage & sc_finished!=0)),
+                     If(fifo_rd.source.valid & dma_rd_desc.ready & ((start.re & start.storage) | (start.storage & (sc_finished!=0))),
                         NextState("RUN"),
                         NextValue(self.test1.status, self.test1.status + 1),
                         dma_rd_desc.valid.eq(1),
@@ -314,12 +313,11 @@ class LitePCIe2WishboneDMA(Module, AutoCSR):
                        fifo_rd.source.ready.eq(1),
                        NextValue(self.test3.status, self.test3.status + 1),
                        NextState("IDLE"),
-                       NextValue(sc_finished, sc_finished + 1),
                        NextValue(dma_enable, 0),
                        If(sc_finished + 1 == sc_depth.storage,
                           NextValue(sc_finished, 0),
                           self.irq.eq(~irq_disable.storage)
-                          ),
+                        ).Else(NextValue(sc_finished, sc_finished + 1)),
                     )
         )
 
