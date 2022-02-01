@@ -41,7 +41,7 @@
 
 #define LITEPCIE_NAME "litepcie"
 #define LITEPCIE_MINOR_COUNT 32
-#define LITEPCIE_DMA_BUF_ORDER (4)
+#define LITEPCIE_DMA_BUF_ORDER (2)
 #define LITEPCIE_DMA_BUF_SIZE (1 << (LITEPCIE_DMA_BUF_ORDER + PAGE_SHIFT))
 
 struct litepcie_device {
@@ -97,21 +97,33 @@ static void litepcie_disable_interrupt(struct litepcie_device *s, int irq_num)
 }
 static void irq0_work_func(struct work_struct *work)
 {
-	
 	struct litepcie_device *s  = container_of(work,struct litepcie_device,irq0_work);
-	litepcie_writel(s,CSR_PCIE_HOST_PCIE2WB_DMA_SC_DEPTH_ADDR,2);
+	//litepcie_writel(s,CSR_PCIE_HOST_PCIE2WB_DMA_SC_DEPTH_ADDR,4);
 
 
 	litepcie_writel(s,CSR_PCIE_HOST_PCIE2WB_DMA_HOST_ADDR_ADDR,s->dma_addr);
-	litepcie_writel(s,CSR_PCIE_HOST_PCIE2WB_DMA_LENGTH_ADDR,LITEPCIE_DMA_BUF_SIZE);
+	litepcie_writel(s,CSR_PCIE_HOST_PCIE2WB_DMA_LENGTH_ADDR,4*1024);
 	litepcie_writel(s,CSR_PCIE_HOST_PCIE2WB_DMA_BUS_ADDR_ADDR,MAIN_RAM_BASE);
 	litepcie_writel(s,CSR_PCIE_HOST_PCIE2WB_DMA_RD_ENABLE_ADDR,1);
 	
 
-	litepcie_writel(s,CSR_PCIE_HOST_PCIE2WB_DMA_HOST_ADDR_ADDR,s->dma_addr);
-	litepcie_writel(s,CSR_PCIE_HOST_PCIE2WB_DMA_LENGTH_ADDR,LITEPCIE_DMA_BUF_SIZE);
-	litepcie_writel(s,CSR_PCIE_HOST_PCIE2WB_DMA_BUS_ADDR_ADDR,MAIN_RAM_BASE+LITEPCIE_DMA_BUF_SIZE);
+	litepcie_writel(s,CSR_PCIE_HOST_PCIE2WB_DMA_HOST_ADDR_ADDR,s->dma_addr+4*1024);
+	litepcie_writel(s,CSR_PCIE_HOST_PCIE2WB_DMA_LENGTH_ADDR,4*1024);
+	litepcie_writel(s,CSR_PCIE_HOST_PCIE2WB_DMA_BUS_ADDR_ADDR,MAIN_RAM_BASE+4*1024);
 	litepcie_writel(s,CSR_PCIE_HOST_PCIE2WB_DMA_RD_ENABLE_ADDR,1);
+	
+        litepcie_writel(s,CSR_PCIE_HOST_PCIE2WB_DMA_HOST_ADDR_ADDR,s->dma_addr);
+        litepcie_writel(s,CSR_PCIE_HOST_PCIE2WB_DMA_LENGTH_ADDR,4*1024);
+        litepcie_writel(s,CSR_PCIE_HOST_PCIE2WB_DMA_BUS_ADDR_ADDR,MAIN_RAM_BASE);
+        litepcie_writel(s,CSR_PCIE_HOST_PCIE2WB_DMA_RD_ENABLE_ADDR,1);
+
+
+        litepcie_writel(s,CSR_PCIE_HOST_PCIE2WB_DMA_HOST_ADDR_ADDR,s->dma_addr+4*1024);
+        litepcie_writel(s,CSR_PCIE_HOST_PCIE2WB_DMA_LENGTH_ADDR,4*1024);
+        litepcie_writel(s,CSR_PCIE_HOST_PCIE2WB_DMA_BUS_ADDR_ADDR,MAIN_RAM_BASE+4*1024);
+        litepcie_writel(s,CSR_PCIE_HOST_PCIE2WB_DMA_RD_ENABLE_ADDR,1);
+	
+	//litepcie_writel(s,CSR_PCIE_HOST_PCIE2WB_DMA_START_ADDR,1);
 	
 	pci_info(s->dev,"irq0_work_func\n");
 	
@@ -119,22 +131,31 @@ static void irq0_work_func(struct work_struct *work)
 static void irq1_work_func(struct work_struct *work)
 {
 	struct litepcie_device *s  = container_of(work,struct litepcie_device,irq1_work);
-
-	litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_HOST_ADDR_ADDR,s->dma_addr);
-	litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_LENGTH_ADDR,LITEPCIE_DMA_BUF_SIZE);
-	litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_BUS_ADDR_ADDR,MAIN_RAM_BASE);
-	litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_WR_ENABLE_ADDR,1);
+	//litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_SC_DEPTH_ADDR,4);
 	
 
-//	litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_LENGTH_ADDR,4*1024);
-//	litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_LENGTH_ADDR,4*1024);
-//	litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_LENGTH_ADDR,4*1024);
-//	litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_LENGTH_ADDR,4*1024);
-	
 	litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_HOST_ADDR_ADDR,s->dma_addr);
-	litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_LENGTH_ADDR,LITEPCIE_DMA_BUF_SIZE);
-	litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_BUS_ADDR_ADDR,MAIN_RAM_BASE+LITEPCIE_DMA_BUF_SIZE);
+	litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_LENGTH_ADDR,4*1024);
+	litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_BUS_ADDR_ADDR,MAIN_RAM_BASE+8*1024);
 	litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_WR_ENABLE_ADDR,1);
+	
+	litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_HOST_ADDR_ADDR,s->dma_addr+4*1024);
+	litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_LENGTH_ADDR,4*1024);
+	litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_BUS_ADDR_ADDR,MAIN_RAM_BASE+8*1024+4*1024);
+	litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_WR_ENABLE_ADDR,1);
+	
+        litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_HOST_ADDR_ADDR,s->dma_addr+8*1024);
+        litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_LENGTH_ADDR,4*1024);
+        litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_BUS_ADDR_ADDR,MAIN_RAM_BASE+8*1024+8*1024);
+        litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_WR_ENABLE_ADDR,1);
+	
+        litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_HOST_ADDR_ADDR,s->dma_addr+4*1024);
+        litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_LENGTH_ADDR,4*1024);
+        litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_BUS_ADDR_ADDR,MAIN_RAM_BASE+8*1024+4*1024);
+        litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_WR_ENABLE_ADDR,1);
+	
+
+	//litepcie_writel(s,CSR_PCIE_HOST_WB2PCIE_DMA_START_ADDR,1);
 	
 	pci_info(s->dev,"irq1_work_func\n");
 }
