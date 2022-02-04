@@ -342,6 +342,7 @@ class LiteWishbone2PCIeDMANative(Module, AutoCSR):
         self.host_addr_offset = host_addr_offset = Signal(32, reset=0)
         self.length = length = Signal(32, reset=0)
         self.bus_addr = bus_addr = Signal(32, reset=0)
+        self.irq_disable = irq_disable = CSRStorage(1, description="Disable PCIe2Wishbone IRQ", reset=0)
         self.start = start = Signal(1, reset=0)
         self.ready = Signal(reset=0)
 
@@ -349,6 +350,7 @@ class LiteWishbone2PCIeDMANative(Module, AutoCSR):
         self.submodules.wb_dma = wb_dma = WishboneDMAReaderCtrl(self.bus_wr)
         wb_dma.add_ctrl()
         self.submodules.conv_wr = conv_wr = stream.Converter(nbits_from=data_width, nbits_to=endpoint.phy.data_width)
+        self.irq = Signal(reset=0)
 
         dma_enable = Signal(reset=0)
 
@@ -394,6 +396,86 @@ class LiteWishbone2PCIeDMANative(Module, AutoCSR):
                         NextValue(self.test3.status, self.test3.status + 1),
                         NextState("IDLE"),
                         NextValue(dma_enable, 0),
+                        self.irq.eq(~irq_disable.storage),
                         self.ready.eq(1)
                         )
                      )
+
+
+# LitePCIe2WishboneDMA --------------------------------------------------------------------------------
+
+class LitePCIe2WishboneDMANative(Module, AutoCSR):
+    def __init__(self, endpoint, data_width=32):
+        port_rd = endpoint.crossbar.get_master_port()
+        self.submodules.dma_rd = dma_rd = LitePCIeDMAReader(
+            endpoint=endpoint,
+            port=port_rd,
+            with_table=False)
+
+        dma_rd_desc = stream.Endpoint(descriptor_layout())
+        self.submodules.dma_fifo = dma_fifo = stream.SyncFIFO(descriptor_layout(), 1)
+        desc_rd = stream.Endpoint(dma_descriptor_layout())
+        self.submodules.fifo_rd = fifo_rd = stream.SyncFIFO(dma_descriptor_layout(), 16)
+
+        self.host_base_addr = host_base_addr = CSRStorage(32, reset=0)
+        self.host_addr_offset = host_addr_offset = Signal(32, reset=0)
+        self.length = length = Signal(32, reset=0)
+        self.bus_addr = bus_addr = Signal(32, reset=0)
+        self.irq_disable = irq_disable = CSRStorage(1, description="Disable PCIe2Wishbone IRQ", reset=0)
+        self.start = start = Signal(1, reset=0)
+        self.ready = Signal(reset=0)
+
+        self.bus_rd = wishbone.Interface(data_width=data_width)
+        self.submodules.wb_dma = wb_dma = WishboneDMAWriterCtrl(self.bus_rd)
+        wb_dma.add_ctrl()
+        self.irq = Signal(reset=0)
+
+        self.submodules.conv_rd = conv_rd = stream.Converter(nbits_from=endpoint.phy.data_width, nbits_to=data_width)
+        dma_enable = Signal(reset=0)
+
+        self.test1 = CSRStatus(32, reset=0)
+        self.test2 = CSRStatus(32, reset=0)
+        self.test3 = CSRStatus(32, reset=0)
+
+        self.comb += [
+            wb_dma.enable.eq(dma_enable),
+
+            dma_rd.source.connect(conv_rd.sink),
+            conv_rd.source.connect(wb_dma.sink),
+            dma_rd_desc.connect(dma_fifo.sink),
+            dma_fifo.source.connect(dma_rd.desc_sink),
+            desc_rd.connect(fifo_rd.sink),
+
+            desc_rd.host_addr.eq(host_base_addr.storage + host_addr_offset),
+            desc_rd.length.eq(length),
+            desc_rd.bus_addr.eq(bus_addr),
+            desc_rd.valid.eq(self.start),
+
+            wb_dma.base.eq(fifo_rd.source.bus_addr),
+            wb_dma.length.eq(fifo_rd.source.length),
+            dma_rd_desc.address.eq(fifo_rd.source.host_addr),
+            dma_rd_desc.length.eq(fifo_rd.source.length),
+        ]
+
+        ctrl_fsm = FSM(reset_state="IDLE")
+        ctrl_fsm = ResetInserter()(ctrl_fsm)
+        self.submodules.ctrl_fsm = ctrl_fsm
+        ctrl_fsm.act("IDLE",
+                     If(fifo_rd.source.valid & dma_rd_desc.ready,
+                        NextState("RUN"),
+                        NextValue(self.test1.status, self.test1.status + 1),
+                        dma_rd_desc.valid.eq(1),
+                        NextValue(dma_enable, 1),
+                        )
+                     )
+        ctrl_fsm.act("RUN",
+                     NextValue(self.test2.status, self.test2.status + 1),
+                     If(wb_dma.done,
+                        fifo_rd.source.ready.eq(1),
+                        NextValue(self.test3.status, self.test3.status + 1),
+                        NextState("IDLE"),
+                        NextValue(dma_enable, 0),
+                        self.irq.eq(~irq_disable.storage),
+                        self.ready.eq(1),
+                    )
+        )
